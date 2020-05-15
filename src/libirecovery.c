@@ -2911,7 +2911,7 @@ IRECV_API irecv_error_t irecv_async_usb_control_transfer(irecv_client_t client, 
 #if HAVE_IOKIT
 	return iokit_async_usb_control_transfer(client, bm_request_type, b_request, w_value, w_index, data, w_length, NULL);
 #else
-
+	irecv_error_t error;
 	unsigned char* buffer = malloc(w_length + 8);
 	if(!buffer) {
 		return IRECV_E_OUT_OF_MEMORY;
@@ -2989,10 +2989,10 @@ IRECV_API irecv_error_t irecv_async_usb_control_transfer_with_cancel(irecv_clien
 	}
 	free(buffer);
 
-	while(transfer->ret != LIBUSB_TRANSFER_CANCELLED){
+	while(transfer.ret != LIBUSB_TRANSFER_CANCELLED){
 		libusb_handle_events_completed(libirecovery_context, NULL);
 	}
-	return transfer->len;
+	return transfer.len;
 #endif
 	return IRECV_E_SUCCESS;
 }
